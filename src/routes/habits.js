@@ -35,11 +35,21 @@ router.post('/', authMiddleware, validateHabit, async (req, res, next) => {
 // Listar todos os hábitos de um usuário
 router.get('/', authMiddleware, async (req, res, next) => {
     try {
-        const { userId } = req;
-        const habits = await Habit.findAll({ where: { userId } });
-        res.status(200).json(habits);
-    } catch (error) {
-        next(error);
+        const { page = 1, limit = 10 } = req.query;
+        const offset = (page - 1) * limit;
+
+        const habits = await Habit.findAndCountAll({
+            limit: parseInt(limit),
+            offset: parseInt(offset),
+        });
+
+        res.json({
+            total: habits.count,
+            page,
+            habits: habits.rows,
+        });
+    } catch (err) {
+        next(err);
     }
 });
 
@@ -64,21 +74,18 @@ router.put('/:id', authMiddleware, async (req, res, next) => {
 });
 
 // Excluir um hábito
-router.delete('/:id', authMiddleware, async (req, res, next) => {
+router.delete('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
+        const deleted = await Habit.destroy({ where: { id } });
 
-        const habit = await Habit.findByPk(id);
-
-        if (!habit) {
-            throw new CustomError('Habit not found', 404, errors.array());
+        if (!deleted) {
+            throw new CustomError('Habit not found', 404);
         }
 
-        await habit.destroy();
-
-        res.status(204).send(); // No content
-    } catch (error) {
-        next(error);
+        res.status(204).send();
+    } catch (err) {
+        next(err);
     }
 });
 
