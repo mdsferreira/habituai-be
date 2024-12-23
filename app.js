@@ -8,7 +8,22 @@ const errorHandler = require('./middlewares/errorHandler'); // Importar o middle
 
 const app = express();
 const PORT = process.env.NODE_ENV === "test" ? 3001 : process.env.PORT || 8000;
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
 
+const swaggerOptions = {
+    swaggerDefinition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'Habits API',
+            version: '1.0.0',
+            description: 'API for managing habits',
+        },
+    },
+    apis: ['./routes/*.js'], // Caminho para as rotas
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
 // Middleware para parsing de JSON
 app.use(bodyParser.json());
 
@@ -19,10 +34,9 @@ sequelize
     .catch((err) => console.error('Erro ao conectar ao banco:', err));
 
 app.use('/api/habits', habitRoutes);
-
 app.use('/api/habit-tracking', habitTrackingRoutes);
-
 app.use('/api/auth', authRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use(errorHandler);
 

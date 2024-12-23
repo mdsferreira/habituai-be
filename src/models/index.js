@@ -1,7 +1,7 @@
 const sequelize = require('../../config/sequelize'); // Instância do Sequelize
-const Habit = require('./Habit')(sequelize); // Modelo de Habit
-const HabitTracking = require('./HabitTracking')(sequelize); // Modelo de HabitTracking
-const User = require('./User')(sequelize); // Modelo de Habit
+const Habit = require('./habit')(sequelize); // Modelo de Habit
+const HabitTracking = require('./habitTracking')(sequelize); // Modelo de HabitTracking
+const User = require('./user')(sequelize); // Modelo de Habit
 
 // Relacionamentos
 Habit.hasMany(HabitTracking, { foreignKey: 'habitId', onDelete: 'CASCADE' });
