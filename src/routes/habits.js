@@ -10,7 +10,7 @@ const router = express.Router();
 // Criar um novo hábito
 router.post('/', authMiddleware, validateHabit, async (req, res, next) => {
     try {
-        const { name, description, frequency, startDate } = req.body;
+        const { name, description, color, icon, frequency, startDate } = req.body;
         const { userId } = req;
 
         const errors = validationResult(req);
@@ -21,6 +21,8 @@ router.post('/', authMiddleware, validateHabit, async (req, res, next) => {
         const habit = await Habit.create({
             userId: Number(userId),
             name,
+            icon,
+            color,
             description,
             frequency,
             startDate,
@@ -37,10 +39,15 @@ router.get('/', authMiddleware, async (req, res, next) => {
     try {
         const { page = 1, limit = 10 } = req.query;
         const offset = (page - 1) * limit;
+        const { userId } = req;
 
+        console.log(userId)
         const habits = await Habit.findAndCountAll({
             limit: parseInt(limit),
             offset: parseInt(offset),
+            where: {
+                userId
+            },
         });
 
         res.json({

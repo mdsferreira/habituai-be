@@ -6,7 +6,7 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
-        notNull: { msg: 'O userId é obrigatório' },
+        notNull: { msg: 'userId is required' },
         isInt: { msg: 'O userId deve ser um número inteiro' },
       },
     },
@@ -14,7 +14,22 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        notNull: { msg: 'O nome do hábito é obrigatório' },
+        notNull: { msg: 'name is required' },
+        len: { args: [3, 100], msg: 'O nome deve ter entre 3 e 100 caracteres' },
+      },
+    },
+    color: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'color is required' },
+        len: { args: [3, 100], msg: 'O nome deve ter entre 3 e 100 caracteres' },
+      },
+    },
+    icon: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
         len: { args: [3, 100], msg: 'O nome deve ter entre 3 e 100 caracteres' },
       },
     },
@@ -28,7 +43,7 @@ module.exports = (sequelize) => {
       type: DataTypes.ENUM('daily', 'weekly', 'monthly'),
       allowNull: false,
       validate: {
-        notNull: { msg: 'A frequência é obrigatória' },
+        notNull: { msg: 'frequency is required' },
         isIn: {
           args: [['daily', 'weekly', 'monthly']],
           msg: 'A frequência deve ser "daily", "weekly" ou "monthly"',

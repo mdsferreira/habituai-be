@@ -9,6 +9,9 @@ const validateHabit = [
         .optional()
         .isLength({ max: 255 })
         .withMessage('A descrição pode ter no máximo 255 caracteres'),
+    body('color')
+        .isLength({ min: 3, max: 100 })
+        .withMessage('The habit color must be between 3 and 100 characters long'),
     body('frequency')
         .isIn(['daily', 'weekly', 'monthly'])
         .withMessage('Frequency must be one of "daily", "weekly", or "monthly"'),
